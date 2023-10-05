@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,32 +57,32 @@ public class BookController {
 		model.addAttribute("books", books);
 		return "booklist";
 	}
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/addbook")
+	
+	@GetMapping("/addbook")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String showAddBookForm(Model model) {
         Iterable<Category> categories = categoryRepository.findAll();
         model.addAttribute("categories", categories);
         return "addbook";
     }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/addbook")
+	
+	@PostMapping("/addbook")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String addBook(@ModelAttribute Book book) {
         bookRepository.save(book);
         return "redirect:/booklist";
     }
 
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/delete/{id}")
+	@PostMapping("/delete/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteBook(@PathVariable Long id) {
         bookRepository.deleteById(id);
         return "redirect:/booklist";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/edit/{id}")
+	@GetMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String editBook(@PathVariable Long id, Model model) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid book ID"));
@@ -91,8 +90,8 @@ public class BookController {
         return "editbook";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/edit/{id}")
+	@PostMapping("/edit/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String updateBook(@PathVariable Long id, @ModelAttribute Book updatedBook) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid book ID"));
